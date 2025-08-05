@@ -2,10 +2,11 @@ import type { Bookmark } from "../../types";
 
 interface BookmarkCardProps {
   bookmark: Bookmark;
+  onClick: () => void;
 }
 
 //TODO fazer case system mais robusto para tipos
-export const BookmarkCard = ({ bookmark }: BookmarkCardProps) => {
+export const BookmarkCard = ({ bookmark, onClick }: BookmarkCardProps) => {
   const renderContent = () => {
     switch (bookmark.type) {
       case "text":
@@ -51,7 +52,10 @@ export const BookmarkCard = ({ bookmark }: BookmarkCardProps) => {
   };
 
   return (
-    <div className="relative bg-white border border-gray-300 rounded-lg p-4 h-64 hover:shadow-md transition-shadow duration-200 flex flex-col">
+    <div
+      className="relative bg-white border border-gray-300 rounded-lg p-4 h-64 hover:shadow-md transition-shadow duration-200 flex flex-col cursor-pointer"
+      onClick={onClick}
+    >
       <div className="flex-grow overflow-hidden">{renderContent()}</div>
       {renderTags()}
     </div>

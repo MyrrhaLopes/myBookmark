@@ -4,6 +4,7 @@ import { Filter, ChevronDown, User, Send } from "lucide-react";
 import { initialBookmarks } from "./data";
 import type { Bookmark } from "./types";
 import { BookmarkCard } from "./Components/UI/BookmarkCard";
+import { BookmarkView } from "./Components/UI/BookmarkView";
 // --- Type Definitions ---
 // Defining interfaces for our data structures and component props.
 
@@ -200,12 +201,17 @@ const Controls = ({
 
 interface BookmarkGridProps {
   bookmarks: Bookmark[];
+  onBookmarkClick: (bookmark: Bookmark) => void;
 }
 
-const BookmarkGrid = ({ bookmarks }: BookmarkGridProps) => (
+const BookmarkGrid = ({ bookmarks, onBookmarkClick }: BookmarkGridProps) => (
   <div className="p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
     {bookmarks.map((bookmark) => (
-      <BookmarkCard key={bookmark.id} bookmark={bookmark} />
+      <BookmarkCard
+        key={bookmark.id}
+        bookmark={bookmark}
+        onClick={() => onBookmarkClick(bookmark)}
+      />
     ))}
   </div>
 );
@@ -229,6 +235,7 @@ export default function App() {
   const [bookmarks, setBookmarks] = useState<Bookmark[]>(initialBookmarks); //BOOKMARKS DE DATA COMO VALOR INICIAL
   const [sortBy, setSortBy] = useState<SortByType>("date");
   const [filter, setFilter] = useState<FilterType>("all");
+  const [selectedBookmark, setSelectedBookmark] = useState<Bookmark | null>(null);
 
   const processedBookmarks = bookmarks
     .filter((bookmark) => {
@@ -259,13 +266,22 @@ export default function App() {
             activeFilter={filter}
             activeSort={sortBy}
           />
-          <BookmarkGrid bookmarks={processedBookmarks} />
+          <BookmarkGrid
+            bookmarks={processedBookmarks}
+            onBookmarkClick={setSelectedBookmark}
+          />
         </main>
         <Composer />
         <footer className="text-center p-4 text-gray-400 text-sm">
           <p>UI recreation by Gemini. Original design by Eraser.</p>
         </footer>
       </div>
+      {selectedBookmark && (
+        <BookmarkView
+          bookmark={selectedBookmark}
+          onClose={() => setSelectedBookmark(null)}
+        />
+      )}
     </div>
   );
 }
