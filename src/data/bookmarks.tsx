@@ -1,12 +1,12 @@
-import type { Bookmark } from "./types";
+import type { Bookmark } from "../types";
 
-export const initialBookmarks: Bookmark[] = [
+export const bookmarks: Bookmark[] = [
   {
     id: 1,
     type: "text",
     content:
       "texto normal lorem ipsum dolores ips amore miu dare tut papil laram marlen varids carmen malu lora plavu paslos ma",
-    tags: [{name:"dev",color: "#000000"}],
+    tags: [{ name: "dev", color: "#000000" }],
     date: "2023-10-26T10:00:00Z",
   },
   {
@@ -28,10 +28,8 @@ export const initialBookmarks: Bookmark[] = [
   {
     id: 5,
     type: "list",
-    content: 
-      "teste "
-    ,
-    tags: [{name: "groceries",color: "#000000"}],
+    content: "teste ",
+    tags: [{ name: "groceries", color: "#000000" }],
     date: "2023-10-22T14:00:00Z",
   },
   {
@@ -44,7 +42,7 @@ export const initialBookmarks: Bookmark[] = [
     type: "text",
     content:
       "This is another piece of text to demonstrate the grid wrapping on different screen sizes.",
-    tags: [{name:"ideas",color: "#000000"}],
+    tags: [{ name: "ideas", color: "#000000" }],
     date: "2023-10-20T16:00:00Z",
   },
   {

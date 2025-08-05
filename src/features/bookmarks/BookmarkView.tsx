@@ -1,12 +1,10 @@
-import type { Bookmark } from "../../types";
-
+import { Composer } from "./components/Composer";
 interface BookmarkViewProps {
-  bookmark: Bookmark;
   onClose: () => void;
 }
 //BUG Bookmarks sem conteúdo crasham o site
 
-export const BookmarkView = ({ bookmark, onClose }: BookmarkViewProps) => {
+export const BookmarkView = ({ onClose }: BookmarkViewProps) => {
   return (
     <div
       className="fixed inset-0 bg-{#000030} backdrop-blur-sm flex items-center justify-center z-50"
@@ -35,9 +33,8 @@ export const BookmarkView = ({ bookmark, onClose }: BookmarkViewProps) => {
             <line x1="6" y1="6" x2="18" y2="18" />
           </svg>
         </button>
-        <h2 className="text-2xl font-bold mb-4">{bookmark.content}</h2>
         <div className="overflow-y-auto h-full pb-12">
-          <p className="text-gray-700">{bookmark.content}</p>
+          <Composer></Composer>
         </div>
       </div>
     </div>

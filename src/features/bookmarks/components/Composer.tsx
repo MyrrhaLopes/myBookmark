@@ -14,11 +14,7 @@ import {
 
 import type { Tag } from "../../../types";
 
-interface ComposerProps {
-  onAddBookmark: (bookmark: Bookmark) => void;
-}
-
-export const Composer = ({ onAddBookmark }: ComposerProps) => {
+export const Composer = () => {
   const mdxEditorRef = useRef<MDXEditorMethods>(null);
 
   const handleAddBookmark = () => {
@@ -43,10 +39,8 @@ export const Composer = ({ onAddBookmark }: ComposerProps) => {
     for (const match of matches) {
       tagList.push({ name: match[0].split("\\#")[1], color: "#000000" });
     }
-    console.log(tagList);
 
     const content = initialContent.replace(tagRegex, "").trim();
-    console.log(content);
 
     const newBookmark: Bookmark = {
       id: Date.now(), // Unique ID
@@ -55,8 +49,8 @@ export const Composer = ({ onAddBookmark }: ComposerProps) => {
       date: new Date().toISOString(),
       tags: tagList,
     };
-    onAddBookmark(newBookmark);
     mdxEditorRef.current?.setMarkdown(""); // Clear the editor
+    console.log(newBookmark);
   };
   //
 
