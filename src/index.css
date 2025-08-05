@@ -1,1 +1,89 @@
 @import "tailwindcss";
+
+/* TODO escrever estilo para renderização markdown */
+h1{
+    font-size: xx-large;
+}h2 {
+    font-size: x-large;
+}
+
+h3 {
+    font-size: large;
+}
+
+ul {
+    list-style-type: disc;
+    margin-left: 1.5em;
+}
+
+ol {
+    list-style-type: decimal;
+    margin-left: 1.5em;
+}
+
+li {
+    margin-bottom: 0.5em;
+}
+
+p {
+    margin-bottom: 1em;
+}
+
+a {
+    color: #646cff;
+    text-decoration: underline;
+}
+
+blockquote {
+    border-left: 4px solid #ccc;
+    margin-left: 1.5em;
+    padding-left: 1em;
+    color: #666;
+}
+
+pre {
+    background-color: #f4f4f4;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 1em;
+    overflow-x: auto;
+}
+
+code {
+    font-family: 'Courier New', Courier, monospace;
+    background-color: #f0f0f0;
+    padding: 0.2em 0.4em;
+    border-radius: 3px;
+}
+
+pre code {
+    background-color: transparent;
+    padding: 0;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1em;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+hr {
+    border: 0;
+    border-top: 1px solid #eee;
+    margin: 1em 0;
+}

@@ -1,4 +1,5 @@
-import type { Bookmark } from "../../types";
+import Markdown from "react-markdown";
+import type { Bookmark } from "../../../types";
 
 interface BookmarkCardProps {
   bookmark: Bookmark;
@@ -7,16 +8,13 @@ interface BookmarkCardProps {
 
 //TODO fazer case system mais robusto para tipos
 export const BookmarkCard = ({ bookmark, onClick }: BookmarkCardProps) => {
-  const renderContent = () => {
+  const Content = () => {
     switch (bookmark.type) {
       case "text":
       case "link":
         return (
           <>
-            <h3 className="font-bold text-lg mb-2">{bookmark.content}</h3>
-            <p className="text-gray-600 text-sm leading-relaxed">
-              {bookmark.content as string}
-            </p>
+            <Markdown>{bookmark.content as string}</Markdown>
           </>
         );
       case "pdf":
@@ -24,9 +22,7 @@ export const BookmarkCard = ({ bookmark, onClick }: BookmarkCardProps) => {
       case "unknown":
         return (
           <div className="flex items-center justify-center h-full">
-            <span className="text-gray-500 font-semibold text-center">
-              {bookmark.content}
-            </span>
+            //TODO adicionar renderização de imagem e pdf
           </div>
         );
 
@@ -35,20 +31,17 @@ export const BookmarkCard = ({ bookmark, onClick }: BookmarkCardProps) => {
     }
   };
 
-  const renderTags = () => {
+  const Tags = () => {
     if (!bookmark.tags || bookmark.tags.length === 0) return null;
-    return (
-      <div className="absolute bottom-3 left-3 flex space-x-2">
-        {bookmark.tags.map((tag) => (
-          <span
-            key={tag}
-            className="px-2 py-1 text-xs font-medium text-white bg-blue-500 rounded-md"
-          >
-            {tag}
-          </span>
-        ))}
+    return bookmark.tags.map((tag) => (
+      <div
+        key={tag.name}
+        className="w-fit h-fit rounded-sm text-white px-2 content-center flex itemns-center"
+        style={{ backgroundColor: tag.color }}
+      >
+        {tag.name}
       </div>
-    );
+    ));
   };
 
   return (
@@ -56,8 +49,10 @@ export const BookmarkCard = ({ bookmark, onClick }: BookmarkCardProps) => {
       className="relative bg-white border border-gray-300 rounded-lg p-4 h-64 hover:shadow-md transition-shadow duration-200 flex flex-col cursor-pointer"
       onClick={onClick}
     >
-      <div className="flex-grow overflow-hidden">{renderContent()}</div>
-      {renderTags()}
+      <div className="flex-grow overflow-hidden">{Content()}</div>
+      <div className="flex flex-row w-full items-center justify-between">
+        {Tags()}
+      </div>
     </div>
   );
 };

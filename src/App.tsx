@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
-import type { ReactNode } from "react";
-import { Filter, ChevronDown, User, Send } from "lucide-react";
+import { useState } from "react";
 import { initialBookmarks } from "./data";
 import type { Bookmark } from "./types";
-import { BookmarkCard } from "./Components/UI/BookmarkCard";
-import { BookmarkView } from "./Components/UI/BookmarkView";
+import { BookmarkCard } from "./features/bookmarks/components/BookmarkCard";
+import { BookmarkView } from "./features/bookmarks/BookmarkView";
+import { Dropdown } from "./components/ui/Dropdown";
+import { Composer } from "./features/bookmarks/components/Composer";
+import { ChevronDown, Filter } from "lucide-react";
 // --- Type Definitions ---
 // Defining interfaces for our data structures and component props.
 
@@ -21,55 +22,6 @@ type FilterType =
   | "unknown";
 
 // --- Components ---
-
-interface DropdownProps {
-  trigger: ReactNode;
-  children: ReactNode;
-}
-
-const Dropdown = ({ trigger, children }: DropdownProps) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
-  const handleSelect = (callback?: () => void) => {
-    if (callback) callback();
-    setIsOpen(false);
-  };
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
-  return (
-    <div className="relative" ref={dropdownRef}>
-      <div onClick={() => setIsOpen(!isOpen)} className="cursor-pointer">
-        {trigger}
-      </div>
-      {isOpen && (
-        <div className="absolute z-10 mt-2 w-48 bg-white rounded-md shadow-lg border border-gray-200">
-          {React.Children.map(children, (child) =>
-            React.isValidElement(child)
-              ? React.cloneElement(child as React.ReactElement<any>, {
-                  onClick: () => handleSelect(child.props.onClick),
-                })
-              : child
-          )}
-        </div>
-      )}
-    </div>
-  );
-};
 
 const Header = () => (
   <header className="flex items-center justify-between p-4 border-b border-gray-200">
@@ -97,7 +49,6 @@ const Header = () => (
       </div>
       <span className="text-2xl font-bold text-gray-800">myBookmark</span>
     </div>
-    <User size={32} className="text-gray-700" strokeWidth={1.5} />
   </header>
 );
 
@@ -216,26 +167,18 @@ const BookmarkGrid = ({ bookmarks, onBookmarkClick }: BookmarkGridProps) => (
   </div>
 );
 
-const Composer = () => (
-  <div className="p-4">
-    <div className="relative bg-white border border-gray-300 rounded-lg">
-      <textarea
-        placeholder="Start typing..."
-        className="w-full h-40 p-4 pr-16 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-      />
-      <button className="absolute right-3 top-4 bg-black text-white w-10 h-10 rounded-lg flex items-center justify-center hover:bg-gray-800 transition-colors">
-        <Send size={20} />
-      </button>
-    </div>
-  </div>
-);
-
 //TODO implementar crud das bookmarks
 export default function App() {
   const [bookmarks, setBookmarks] = useState<Bookmark[]>(initialBookmarks); //BOOKMARKS DE DATA COMO VALOR INICIAL
   const [sortBy, setSortBy] = useState<SortByType>("date");
   const [filter, setFilter] = useState<FilterType>("all");
-  const [selectedBookmark, setSelectedBookmark] = useState<Bookmark | null>(null);
+  const [selectedBookmark, setSelectedBookmark] = useState<Bookmark | null>(
+    null
+  );
+
+  const handleAddBookmark = (newBookmark: Bookmark) => {
+    setBookmarks((prevBookmarks) => [newBookmark, ...prevBookmarks]);
+  };
 
   const processedBookmarks = bookmarks
     .filter((bookmark) => {
@@ -271,7 +214,7 @@ export default function App() {
             onBookmarkClick={setSelectedBookmark}
           />
         </main>
-        <Composer />
+        <Composer onAddBookmark={handleAddBookmark} />
         <footer className="text-center p-4 text-gray-400 text-sm">
           <p>UI recreation by Gemini. Original design by Eraser.</p>
         </footer>

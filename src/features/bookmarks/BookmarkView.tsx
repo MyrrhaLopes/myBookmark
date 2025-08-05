@@ -4,6 +4,7 @@ interface BookmarkViewProps {
   bookmark: Bookmark;
   onClose: () => void;
 }
+//BUG Bookmarks sem conteúdo crasham o site
 
 export const BookmarkView = ({ bookmark, onClose }: BookmarkViewProps) => {
   return (
