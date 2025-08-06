@@ -50,7 +50,7 @@ export const BookmarkView = ({
       tags: tagList,
     };
 
-    onSave(bookmark.id, updatedData);
+    onSave(bookmark.id, updatedData); //chama updateBookmark no componente pai App
     onClose();
   };
 

@@ -4,37 +4,8 @@ import { BookmarkCard } from "./features/bookmarks/components/BookmarkCard";
 import { Composer } from "./features/bookmarks/components/Composer";
 import { useBookmark } from "./features/bookmarks/hooks/useBookmark";
 import { BookmarkView } from "./features/bookmarks/BookmarkView";
-
+import { Header } from "./components/ui/Header";
 // --- Components ---
-
-const Header = () => (
-  <header className="flex items-center justify-between p-4 border-b border-gray-200">
-    <div className="flex items-center space-x-3">
-      <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="text-gray-500"
-        >
-          <path d="m15 5-3 3-3-3 3-3 3 3z" />
-          <path d="m6 15 3 3 3-3-3-3-3 3z" />
-          <path d="M9 9 3 3" />
-          <path d="m21 21-6-6" />
-          <path d="m21 3-6 6" />
-          <path d="m3 21 6-6" />
-        </svg>
-      </div>
-      <span className="text-2xl font-bold text-gray-800">myBookmark</span>
-    </div>
-  </header>
-);
 
 interface BookmarkGridProps {
   bookmarks: Bookmark[];
@@ -47,7 +18,7 @@ const BookmarkGrid = ({ bookmarks, onCardClick }: BookmarkGridProps) => (
       <BookmarkCard
         key={bookmark.id}
         bookmark={bookmark}
-        onClick={() => onCardClick(bookmark)}
+        onClick={() => onCardClick(bookmark)} //setEditingBookmark repassado de App (componente pai)
       />
     ))}
   </div>
@@ -58,7 +29,7 @@ export default function App() {
   const [editingBookmark, setEditingBookmark] = useState<Bookmark | null>(null);
 
   const handleCloseView = () => {
-    setEditingBookmark(null);
+    setEditingBookmark(null); //Retirar qualquer bookmark do modo de edição
   };
 
   return (
@@ -79,9 +50,7 @@ export default function App() {
             onSave={updateBookmark}
           />
         )}
-        <footer className="text-center p-4 text-gray-400 text-sm">
-          <p>UI recreation by Gemini. Original design by Eraser.</p>
-        </footer>
+        <footer className="text-center p-4 text-gray-400 text-sm"></footer>
       </div>
     </div>
   );
