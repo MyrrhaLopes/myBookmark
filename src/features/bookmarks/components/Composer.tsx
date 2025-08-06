@@ -14,7 +14,11 @@ import {
 
 import type { Tag } from "../../../types";
 
-export const Composer = () => {
+interface ComposerProps {
+  addBookmark: (bookmark: Bookmark) => void;
+}
+
+export const Composer = ({ addBookmark }: ComposerProps) => {
   const mdxEditorRef = useRef<MDXEditorMethods>(null);
 
   const handleAddBookmark = () => {
@@ -49,8 +53,8 @@ export const Composer = () => {
       date: new Date().toISOString(),
       tags: tagList,
     };
+    addBookmark(newBookmark); // Use the addBookmark function from props
     mdxEditorRef.current?.setMarkdown(""); // Clear the editor
-    console.log(newBookmark);
   };
   //
 

@@ -1,11 +1,9 @@
+import { useState } from "react";
 import type { Bookmark } from "./types";
 import { BookmarkCard } from "./features/bookmarks/components/BookmarkCard";
 import { Composer } from "./features/bookmarks/components/Composer";
 import { useBookmark } from "./features/bookmarks/hooks/useBookmark";
-// --- Type Definitions ---
-// Defining interfaces for our data structures and component props.
-
-//TODO refletir sobre a estrutura correta do tipo bookmark
+import { BookmarkView } from "./features/bookmarks/BookmarkView";
 
 // --- Components ---
 
@@ -40,32 +38,47 @@ const Header = () => (
 
 interface BookmarkGridProps {
   bookmarks: Bookmark[];
+  onCardClick: (bookmark: Bookmark) => void;
 }
 
-const BookmarkGrid = ({ bookmarks }: BookmarkGridProps) => (
+const BookmarkGrid = ({ bookmarks, onCardClick }: BookmarkGridProps) => (
   <div className="p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
     {bookmarks.map((bookmark) => (
       <BookmarkCard
         key={bookmark.id}
         bookmark={bookmark}
-        onClick={() => bookmark}
+        onClick={() => onCardClick(bookmark)}
       />
     ))}
   </div>
 );
 
-//TODO implementar crud das bookmarks
 export default function App() {
-  const { bookmarks } = useBookmark();
+  const { bookmarks, addBookmark, updateBookmark } = useBookmark();
+  const [editingBookmark, setEditingBookmark] = useState<Bookmark | null>(null);
+
+  const handleCloseView = () => {
+    setEditingBookmark(null);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 font-sans">
       <div className="max-w-screen-xl mx-auto">
         <Header />
         <main>
-          <BookmarkGrid bookmarks={bookmarks} />
+          <BookmarkGrid
+            bookmarks={bookmarks}
+            onCardClick={setEditingBookmark}
+          />
         </main>
-        <Composer />
+        <Composer addBookmark={addBookmark} />
+        {editingBookmark && (
+          <BookmarkView
+            bookmark={editingBookmark}
+            onClose={handleCloseView}
+            onSave={updateBookmark}
+          />
+        )}
         <footer className="text-center p-4 text-gray-400 text-sm">
           <p>UI recreation by Gemini. Original design by Eraser.</p>
         </footer>
