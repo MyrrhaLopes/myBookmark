@@ -1,41 +1,63 @@
-import { useState } from "react";
+// src/features/bookmarks/hooks/useBookmark.tsx
+import { useState, useEffect } from "react";
+import { supabase } from "../../../supabaseClient";
+import type { Session } from "@supabase/supabase-js";
 import type { Bookmark } from "../../../types";
-import { bookmarks as initialBookmarks } from "../../../data/bookmarks";
 
-export const useBookmark = () => {
-  const [bookmarks, setBookmarks] = useState<Bookmark[]>(initialBookmarks);
+export const useBookmark = (session: Session | null) => {
+  const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
 
-  /**
-   * C(R)UD - Adds a new bookmark to the state.
-   * In a real app, this would be an async function making a POST request.
-   * Ex: const response = await fetch('/api/bookmarks', { method: 'POST', ... });
-   */
-  const addBookmark = (newBookmark: Bookmark) => {
-    setBookmarks((prevBookmarks) => [newBookmark, ...prevBookmarks]);
+  useEffect(() => {
+    if (session) {
+      getBookmarks();
+    }
+  }, [session]);
+
+  async function getBookmarks() {
+    const { data, error } = await supabase.from("bookmarks").select("*");
+    if (error) {
+      console.error("Error fetching bookmarks:", error);
+      return;
+    }
+    setBookmarks(data || []);
+  }
+
+  const addBookmark = async (
+    newBookmark: Omit<Bookmark, "id" | "date" | "user_id">
+  ) => {
+    if (!session) return;
+    const { data, error } = await supabase
+      .from("bookmarks")
+      .insert({ ...newBookmark, user_id: session.user.id })
+      .select()
+      .single();
+    if (error) {
+      console.error("Error adding bookmark:", error);
+    } else if (data) {
+      setBookmarks([data, ...bookmarks]);
+    }
   };
 
-  /**
-   * CR(U)D - Updates an existing bookmark.
-   * In a real app, this would be an async function making a PUT/PATCH request.
-   * Ex: await fetch(`/api/bookmarks/${id}`, { method: 'PATCH', ... });
-   */
-  const updateBookmark = (id: number, updatedData: Partial<Bookmark>) => {
-    setBookmarks((prevBookmarks) =>
-      prevBookmarks.map((bookmark) =>
-        bookmark.id === id ? { ...bookmark, ...updatedData } : bookmark
-      )
-    );
+  const updateBookmark = async (id: number, updatedData: Partial<Bookmark>) => {
+    const { data, error } = await supabase
+      .from("bookmarks")
+      .update(updatedData)
+      .eq("id", id)
+      .select()
+      .single();
+    if (error) {
+      console.error("Error updating bookmark:", error);
+    } else if (data) {
+      setBookmarks(
+        bookmarks.map((bookmark) => (bookmark.id === id ? data : bookmark))
+      );
+    }
   };
 
-  /**
-   * CRU(D) - Deletes a bookmark from the state.
-   * In a real app, this would be an async function making a DELETE request.
-   * Ex: await fetch(`/api/bookmarks/${id}`, { method: 'DELETE' });
-   */
-  const deleteBookmark = (id: number) => {
-    setBookmarks((prevBookmarks) =>
-      prevBookmarks.filter((bookmark) => bookmark.id !== id)
-    );
+  const deleteBookmark = async (id: number) => {
+    const { error } = await supabase.from("bookmarks").delete().eq("id", id);
+    if (error) console.error("Error deleting bookmark:", error);
+    else setBookmarks(bookmarks.filter((bookmark) => bookmark.id !== id));
   };
 
   return { bookmarks, addBookmark, updateBookmark, deleteBookmark };

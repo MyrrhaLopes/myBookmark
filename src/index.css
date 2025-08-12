@@ -85,3 +85,19 @@ hr {
     border-top: 1px solid #eee;
     margin: 1em 0;
 }
+
+.mdxeditor-popup-container{
+    display: none;
+}
+
+
+
+.mdxeditor-root-contenteditable{
+    height: 100%;
+}
+
+
+._contentEditable_sects_380{
+    outline: none;
+    height: 100%;
+}

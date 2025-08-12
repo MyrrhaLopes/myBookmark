@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import type { Bookmark } from "../../../types";
-import { Send } from "lucide-react";
+import { Paperclip, Send } from "lucide-react";
 import {
   headingsPlugin,
   linkPlugin,
@@ -13,7 +13,7 @@ import {
 } from "@mdxeditor/editor";
 
 import type { Tag } from "../../../types";
-
+import { AttachButton } from "../../fileManager/components/attachButton";
 interface ComposerProps {
   addBookmark: (bookmark: Bookmark) => void;
 }
@@ -74,12 +74,24 @@ export const Composer = ({ addBookmark }: ComposerProps) => {
           ]}
           className="w-full h-40 p-4 pr-16 rounded-lg resize-y overflow-y-scroll outline-none focus:outline-none    "
         ></MDXEditor>
-        <button
-          onClick={handleAddBookmark}
-          className="absolute right-3 top-4 bg-black text-white w-10 h-10 rounded-lg flex items-center justify-center hover:bg-gray-800 transition-colors"
-        >
-          <Send size={20} />
-        </button>
+        <div className="flex flex-row w-fit h-fit space-x-12 items-center">
+          <button
+            onClick={handleAddBookmark}
+            className="absolute right-3 top-4 bg-black text-white w-10 h-10 rounded-lg flex items-center justify-center hover:bg-gray-800 transition-colors"
+          >
+            <Send size={20} />
+          </button>
+          <AttachButton></AttachButton>
+          <button
+            onClick={
+              /*TODO adicionar implementação de bucket*/ () =>
+                console.log("printing")
+            }
+            className="absolute right-3 top-4 bg-black text-white w-10 h-10 rounded-lg flex items-center justify-center hover:bg-gray-800 transition-colors"
+          >
+            <Paperclip size={20} />
+          </button>
+        </div>
       </div>
     </div>
   );
