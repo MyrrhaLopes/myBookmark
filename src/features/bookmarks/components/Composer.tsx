@@ -13,14 +13,16 @@ import {
 } from "@mdxeditor/editor";
 
 import type { Tag } from "../../../types";
-import { AttachButton } from "../../fileManager/components/attachButton";
+import { useHandleUpload } from "../../fileManager/hooks/useFileUploader";
 interface ComposerProps {
   addBookmark: (bookmark: Bookmark) => void;
 }
 
 export const Composer = ({ addBookmark }: ComposerProps) => {
   const mdxEditorRef = useRef<MDXEditorMethods>(null);
+  const { files, setFiles } = useHandleUpload();
 
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const handleAddBookmark = () => {
     const initialContent = mdxEditorRef.current?.getMarkdown() || "";
     if (initialContent.trim() === "") return;
@@ -56,11 +58,28 @@ export const Composer = ({ addBookmark }: ComposerProps) => {
     addBookmark(newBookmark); // Use the addBookmark function from props
     mdxEditorRef.current?.setMarkdown(""); // Clear the editor
   };
-  //
+  // Normalize to an array (adjust if your hook already returns File[]):
+  const fileArray = files ? Array.from(files) : [];
 
   return (
     <div className="p-4">
-      <div className="relative bg-white border border-gray-300 rounded-lg">
+      <div className="relative bg-white border border-gray-300 rounded-lg flex flex-col">
+        {fileArray.length > 0 && (
+          <div
+            className="flex w-full flex-wrap gap-2 p-2 cursor-pointer"
+            onClick={() => fileInputRef.current?.click()}
+            title="Click to add more files"
+          >
+            {fileArray.map((f) => (
+              <span
+                key={f.name + f.lastModified}
+                className="text-xs px-2 py-1 bg-gray-100 rounded border border-gray-200"
+              >
+                {f.name}
+              </span>
+            ))}
+          </div>
+        )}
         <MDXEditor
           ref={mdxEditorRef}
           markdown={""}
@@ -72,26 +91,39 @@ export const Composer = ({ addBookmark }: ComposerProps) => {
             thematicBreakPlugin(),
             markdownShortcutPlugin(),
           ]}
-          className="w-full h-40 p-4 pr-16 rounded-lg resize-y overflow-y-scroll outline-none focus:outline-none    "
-        ></MDXEditor>
-        <div className="flex flex-row w-fit h-fit space-x-12 items-center">
+          className="w-full h-40 pl-4 pb-4 rounded-lg resize-y overflow-y-scroll outline-none"
+        />
+        {/* Buttons container */}
+        <div className="absolute top-4 right-4 flex gap-2 z-10">
           <button
-            onClick={handleAddBookmark}
-            className="absolute right-3 top-4 bg-black text-white w-10 h-10 rounded-lg flex items-center justify-center hover:bg-gray-800 transition-colors"
+            onClick={() => {
+              handleAddBookmark();
+              console.log(files);
+              setFiles(undefined);
+            }}
+            className="bg-black text-white w-10 h-10 rounded-lg flex items-center justify-center hover:bg-gray-800 transition-colors"
           >
             <Send size={20} />
           </button>
-          <AttachButton></AttachButton>
           <button
-            onClick={
-              /*TODO adicionar implementação de bucket*/ () =>
-                console.log("printing")
-            }
-            className="absolute right-3 top-4 bg-black text-white w-10 h-10 rounded-lg flex items-center justify-center hover:bg-gray-800 transition-colors"
+            onClick={() => fileInputRef.current?.click()}
+            className="bg-black text-white w-10 h-10 rounded-lg flex items-center justify-center hover:bg-gray-800 transition-colors"
           >
             <Paperclip size={20} />
           </button>
         </div>
+        <input
+          ref={fileInputRef}
+          type="file"
+          multiple
+          className="hidden"
+          onChange={(e) => {
+            if (e.target.files) {
+              setFiles(e.target.files);
+              e.target.value = "";
+            }
+          }}
+        />
       </div>
     </div>
   );
