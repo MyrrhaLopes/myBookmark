@@ -1,19 +1,26 @@
+import "@mdxeditor/editor/style.css";
 import { useRef } from "react";
-import type { Bookmark } from "../../../types";
+import type { Bookmark } from "../../types";
 import { Paperclip, Send } from "lucide-react";
 import {
+  codeBlockPlugin,
+  codeMirrorPlugin,
+  frontmatterPlugin,
   headingsPlugin,
+  imagePlugin,
+  linkDialogPlugin,
   linkPlugin,
   listsPlugin,
   markdownShortcutPlugin,
   MDXEditor,
   quotePlugin,
+  tablePlugin,
   thematicBreakPlugin,
   type MDXEditorMethods,
 } from "@mdxeditor/editor";
 
-import type { Tag } from "../../../types";
-import { useHandleUpload } from "../../fileManager/hooks/useFileUploader";
+import type { Tag } from "../../types";
+import { useHandleUpload } from "../fileManager/hooks/useFileUploader";
 interface ComposerProps {
   addBookmark: (bookmark: Bookmark) => void;
 }
@@ -84,11 +91,32 @@ export const Composer = ({ addBookmark }: ComposerProps) => {
           ref={mdxEditorRef}
           markdown={""}
           plugins={[
-            headingsPlugin(),
             listsPlugin(),
-            linkPlugin(),
             quotePlugin(),
+            headingsPlugin({ allowedHeadingLevels: [1, 2, 3] }),
+            linkPlugin(),
+            linkDialogPlugin(),
+            imagePlugin({
+              imageAutocompleteSuggestions: [
+                "https://via.placeholder.com/150",
+                "https://via.placeholder.com/150",
+              ],
+              imageUploadHandler: async () =>
+                Promise.resolve("https://picsum.photos/200/300"),
+            }),
+            tablePlugin(),
             thematicBreakPlugin(),
+            frontmatterPlugin(),
+            codeBlockPlugin({ defaultCodeBlockLanguage: "" }),
+            codeMirrorPlugin({
+              codeBlockLanguages: {
+                js: "JavaScript",
+                css: "CSS",
+                txt: "Plain Text",
+                tsx: "TypeScript",
+                "": "Unspecified",
+              },
+            }),
             markdownShortcutPlugin(),
           ]}
           className="w-full h-40 pl-4 pb-4 rounded-lg resize-y overflow-y-scroll outline-none"
@@ -98,10 +126,19 @@ export const Composer = ({ addBookmark }: ComposerProps) => {
           <button
             onClick={() => {
               handleAddBookmark();
+
               console.log(files);
               setFiles(undefined);
             }}
             className="bg-black text-white w-10 h-10 rounded-lg flex items-center justify-center hover:bg-gray-800 transition-colors"
+          >
+            <Send size={20} />
+          </button>
+          <button
+            onClick={() => {
+              console.log(mdxEditorRef.current?.getMarkdown());
+            }}
+            className="bg-red-400 text-white w-10 h-10 rounded-lg flex items-center justify-center hover:bg-gray-800 transition-colors"
           >
             <Send size={20} />
           </button>

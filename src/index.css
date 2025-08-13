@@ -10,21 +10,14 @@ h1{
 h3 {
     font-size: large;
 }
-
-ul {
-    list-style-type: disc;
-    margin-left: 1.5em;
+.mdxeditor ul,
+.mdxeditor ol {
+  padding-left: 1.5rem;
+  list-style-position: outside;
 }
-
-ol {
-    list-style-type: decimal;
-    margin-left: 1.5em;
-}
-
-li {
-    margin-bottom: 0.5em;
-}
-
+.mdxeditor ul { list-style-type: disc; }
+.mdxeditor ol { list-style-type: decimal; }
+.mdxeditor li { display: list-item; }
 
 
 a {

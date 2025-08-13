@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import type { Bookmark } from "./types";
-import { BookmarkCard } from "./features/bookmarks/components/BookmarkCard";
-import { Composer } from "./features/bookmarks/components/Composer";
-import { useBookmark } from "./features/bookmarks/hooks/useBookmark";
+import { BookmarkCard } from "./features/bookmarks/BookmarkCard";
+import { Composer } from "./features/bookmarks/Composer";
+import { useBookmark } from "./features/bookmarks/useBookmark";
 import { BookmarkView } from "./features/bookmarks/BookmarkView";
 import { Header } from "./components/ui/Header";
 import { supabase } from "./supabaseClient";
@@ -16,13 +16,25 @@ interface BookmarkGridProps {
   onCardClick: (bookmark: Bookmark) => void;
 }
 
-const BookmarkGrid = ({ bookmarks, onCardClick }: BookmarkGridProps) => (
+type BookmarkGridWithUpdateProps = BookmarkGridProps & {
+  onUpdate: (id: number, updatedData: Partial<Bookmark>) => void;
+  onDelete: (id: number) => void;
+};
+
+const BookmarkGrid = ({
+  bookmarks,
+  onCardClick,
+  onUpdate,
+  onDelete,
+}: BookmarkGridWithUpdateProps) => (
   <div className="p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
     {bookmarks.map((bookmark) => (
       <BookmarkCard
         key={bookmark.id}
         bookmark={bookmark}
+        onDelete={onDelete}
         onClick={() => onCardClick(bookmark)} //setEditingBookmark repassado de App (componente pai)
+        onUpdate={onUpdate}
       />
     ))}
   </div>
@@ -30,7 +42,8 @@ const BookmarkGrid = ({ bookmarks, onCardClick }: BookmarkGridProps) => (
 
 export default function App() {
   const [session, setSession] = useState<Session | null>(null);
-  const { bookmarks, addBookmark, updateBookmark } = useBookmark(session);
+  const { bookmarks, addBookmark, updateBookmark, deleteBookmark } =
+    useBookmark(session);
   const [editingBookmark, setEditingBookmark] = useState<Bookmark | null>(null);
 
   const handleCloseView = () => {
@@ -66,6 +79,8 @@ export default function App() {
             <BookmarkGrid
               bookmarks={bookmarks}
               onCardClick={setEditingBookmark}
+              onUpdate={updateBookmark}
+              onDelete={deleteBookmark}
             />
           </main>
           <Composer addBookmark={addBookmark} />

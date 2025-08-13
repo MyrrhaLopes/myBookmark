@@ -1,8 +1,8 @@
 // src/features/bookmarks/hooks/useBookmark.tsx
 import { useState, useEffect } from "react";
-import { supabase } from "../../../supabaseClient";
+import { supabase } from "../../supabaseClient";
 import type { Session } from "@supabase/supabase-js";
-import type { Bookmark } from "../../../types";
+import type { Bookmark } from "../../types";
 
 export const useBookmark = (session: Session | null) => {
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);

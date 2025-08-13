@@ -10,7 +10,7 @@ import {
   thematicBreakPlugin,
   type MDXEditorMethods,
 } from "@mdxeditor/editor";
-import { Save } from "lucide-react";
+import { Save, XCircle } from "lucide-react";
 
 interface BookmarkViewProps {
   bookmark: Bookmark;
@@ -60,10 +60,11 @@ export const BookmarkView = ({
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-lg shadow-xl w-1/2 min-h-1/2 p-6 relative animate-fade-in flex flex-col"
+        className="bg-white rounded-lg shadow-xl w-screen h-screen  sm:w-2/3 sm:min-h-2/3 p-6 relative animate-fade-in [&::-webkit-scrollbar]:hidden overflow-y-hidden flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-center mb-4">
+          <XCircle onClick={onClose}></XCircle>
           {/* <button
             onClick={onClose}
             className="text-gray-500 hover:text-gray-800"
@@ -85,7 +86,7 @@ export const BookmarkView = ({
           </button> */}
         </div>
 
-        <div className="relative flex-grow">
+        <div className="relative flex-grow overflow-y-scroll [&::-webkit-scrollbar]:hidden  [-ms-overflow-style:'none'] [scrollbar-width:'none']">
           <MDXEditor
             ref={mdxEditorRef}
             markdown={""} // Content is set via useEffect
@@ -97,7 +98,7 @@ export const BookmarkView = ({
               thematicBreakPlugin(),
               markdownShortcutPlugin(),
             ]}
-            className="w-full h-full p-4 pr-16 rounded-lg resize-y overflow-y-scroll outline-none focus:outline-none border border-gray-200"
+            className="w-full h-full p-4 pr-16 rounded-lg resize-y overflow-y-scroll [&::-webkit-scrollbar]:hidden  [-ms-overflow-style:'none'] [scrollbar-width:'none'] outline-none focus:outline-none border border-gray-200"
           />
           <button
             onClick={handleSave}
